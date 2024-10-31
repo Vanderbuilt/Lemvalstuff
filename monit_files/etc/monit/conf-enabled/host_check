@@ -1,0 +1,2 @@
+check host [hostname] with address [ip_address]
+	if failed ping then alert
