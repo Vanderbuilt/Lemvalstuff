@@ -1,0 +1,3 @@
+check process opera
+	matching opera
+	if failed host 127.0.0.1 port 5050 type tcp then alert
