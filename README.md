@@ -1,6 +1,10 @@
 # Lemvalstuff
 Scripts, configs, and code for Lem Validators 
 
+# Monitoring
+
+Monit is an easy and free way to monitor the the overal health of your validator. Instructions on installing monit are found here: https://tecadmin.net/how-to-install-monit-on-ubuntu-22-04/
+
 ## monit configs
 Note: While this monitoring will alert on various health issues on the server, if the server crashes, there is a good chance that no alerts will be generated. It would be a good idea to have another server running a monit host_check on your validator.
 
