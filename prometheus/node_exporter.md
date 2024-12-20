@@ -1,16 +1,42 @@
-### Setup Node Exporter to grab Validator Metrics
+### Setup Node Exporter to grab Validator Metrics ###  
 
 Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/
 
-Add this to crontab - run: 
-   ```crontab -e```
-   ```*/5 * * * * /home/ubuntu/scripts/promValStats.sh > /var/lib/prometheus/node-exporter/valStats.prom```
+Add this to crontab - run:  
+    `crontab -e`  
 
-Copy the promValStats.sh script to the /home/ubuntu/scripts directory and make sure it has executable permissions
-   ```chmod +x /home/ubuntu/scripts/promValStats.sh```
+Add this line to your crontab:  
+    `*/5 * * * * /home/ubuntu/scripts/promValStats.sh > /var/lib/prometheus/node-exporter/valStats.prom`  
 
+Copy the **promValStats.sh** script to the **/home/ubuntu/scripts** directory and make sure it has executable permissions.  
+    `chmod +x /home/ubuntu/scripts/promValStats.sh`
 
+Make sure that **/var/lib/prometheus/node-exporter** exists and has an ownership of **prometheus:prometheus**.  
+    `sudo chown prometheus:prometheus /var/lib/prometheus/node-exporter`  
 
+Add the **ubuntu** user to the **prometheus** group so that it has permissions to write in this new folder.  
+    `sudo usermod -a -G prometheus ubuntu`  
     
 Next we'll need to tell node-exporter to export in text files.
-Edit */etc/systemd/system/node-exporter.service* with your favorite text editor
+Edit **/etc/systemd/system/node-exporter.service** with your favorite text editor. The contents should look like this:  
+
+  
+    [Unit]
+    Description=Prometheus exporter for machine metrics
+    
+    [Service]
+    Restart=always
+    User=prometheus
+    ExecStart=/usr/local/bin/node_exporter --collector.textfile.directory=/var/lib/prometheus/node-exporter
+    ExecReload=/bin/kill -HUP $MAINPID
+    TimeoutStopSec=20s
+    SendSIGKILL=no
+    
+    [Install]
+    WantedBy=multi-user.target  
+
+We'll now need to reload the startup file and restart node exporter.  
+
+    sudo systemctl daemon-reload  
+    sudo systemctl restart node-exporter   
+    
