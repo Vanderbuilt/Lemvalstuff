@@ -1,7 +1,7 @@
 #!/bin/bash
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
 text="val_pending_rewards "
-rewards=$($operaCMD 'sfcc.pendingRewards("0x<enter the rest of your Wallet Address here>",<enter Validator ID here: ###>);')
+rewards=$($operaCMD 'sfcc.pendingRewards("0x[enter the rest of your Wallet Address here]",[enter Validator ID here: ###]);')
 block=$($operaCMD 'ftm.blockNumber;')
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
