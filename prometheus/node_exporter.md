@@ -1,4 +1,4 @@
-### Setup Node Exporter to grab Validator Metrics ###  
+### Setup Node Exporter to gather Validator Metrics ###  
 
 Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/
 
