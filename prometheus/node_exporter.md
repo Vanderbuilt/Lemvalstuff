@@ -1,21 +1,21 @@
 ### Setup Node Exporter to gather Validator Metrics ###  
 
-Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/
+Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/ 
 
-Add this to crontab - run:  
-    `crontab -e`  
-
-Add this line to your crontab:  
-    `*/5 * * * * /home/ubuntu/scripts/promValStats.sh > /var/lib/prometheus/node-exporter/valStats.prom`  
-
-Copy the **promValStats.sh** script to the **/home/ubuntu/scripts** directory and make sure it has executable permissions.  
-    `chmod +x /home/ubuntu/scripts/promValStats.sh`
+Copy the **getValStats.sh** script to the **/home/ubuntu/scripts** directory and make sure it has executable permissions.  
+    `chmod +x /home/ubuntu/scripts/getValStats.sh`
 
 Make sure that **/var/lib/prometheus/node-exporter** exists and has an ownership of **prometheus:prometheus**.  
     `sudo chown prometheus:prometheus /var/lib/prometheus/node-exporter`  
 
 Add the **ubuntu** user to the **prometheus** group so that it has permissions to write in this new folder.  
     `sudo usermod -a -G prometheus ubuntu`  
+
+Edit crontab:  
+    `crontab -e`  
+
+Add this line to your crontab:  
+    `*/5 * * * * /home/ubuntu/scripts/getValStats.sh -p > /var/lib/prometheus/node-exporter/valStats.prom` 
     
 Next we'll need to tell node-exporter to export in text files.
 Edit **/etc/systemd/system/node-exporter.service** with your favorite text editor. The contents should look like this:  
