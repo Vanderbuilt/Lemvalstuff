@@ -39,4 +39,7 @@ We'll now need to reload the startup file and restart node exporter.
 
     sudo systemctl daemon-reload  
     sudo systemctl restart node-exporter   
+
+Your validator metrics should now be visible in the node-exporter data. You can view this using a browser or the curl command. Here is an example using curl:  
+    `curl http://localhost:9100/metrics`  
     
