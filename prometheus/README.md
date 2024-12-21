@@ -2,8 +2,9 @@
 
 Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/ 
 
-Copy the **getValStats.sh** script to the **/home/ubuntu/scripts** directory and make sure it has executable permissions.  
+Copy the **getValStats.sh** and **formatMetrics.py** scripts to the **/home/ubuntu/scripts** directory and make sure they have executable permissions.  
     `chmod +x /home/ubuntu/scripts/getValStats.sh`
+    `chmod +x /home/ubuntu/scripts/formatMetrics.py`
 
 Make sure that **/var/lib/prometheus/node-exporter** exists and has an ownership of **prometheus:prometheus**.  
     `sudo chown prometheus:prometheus /var/lib/prometheus/node-exporter`  
@@ -14,8 +15,9 @@ Add the **ubuntu** user to the **prometheus** group so that it has permissions t
 Edit crontab:  
     `crontab -e`  
 
-Add this line to your crontab:  
-    `*/5 * * * * /home/ubuntu/scripts/getValStats.sh -p > /var/lib/prometheus/node-exporter/valStats.prom` 
+Add these lines to your crontab:  
+    `*/5 * * * * /home/ubuntu/scripts/getValStats.sh -p > /var/lib/prometheus/node-exporter/valStats.prom`  
+    `*/5 * * * * /home/ubuntu/scripts/formatMetrics.py > /var/lib/prometheus/node-exporter/valMetrics.prom`  
     
 Next we'll need to tell node-exporter to export in text files.
 Edit **/etc/systemd/system/node-exporter.service** with your favorite text editor. The contents should look like this:  
