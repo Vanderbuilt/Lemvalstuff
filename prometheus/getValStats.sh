@@ -16,14 +16,17 @@ walletAddr="0x00000"
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
 
 # Get Specific Validator Metrics
-rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")
-divisor=10**18
-rewards=$rewards/$divisor
+particle=10**18
+rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
+stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
+lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particle
+delegated=$($operaCMD "sfcc.getValidator($valID)[3];")/$particle
 block=$($operaCMD 'ftm.blockNumber;')
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
 peerCount=$($operaCMD 'net.peerCount;')
-walletStatus=$($operaCMD 'personal.listWallets;' | grep status | cut -d'"' -f2)
+walletStatus=$($operaCMD "personal.listWallets[0][\"status\"];")
+walletStatus=$(echo "$walletStatus" | tr -d "'\"")
 txPoolPending=$($operaCMD 'txpool.status.pending;')
 txPoolQueued=$($operaCMD 'txpool.status.queued;')
 
@@ -36,6 +39,12 @@ print_stats() {
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
+    printf "%s" "Staked LEMX: "
+    awk "BEGIN {print $stake}" 
+    printf "%s" "Locked/Staked LEMX: "
+    awk "BEGIN {print $lockedStake}" 
+    printf "%s" "Delegated LEMX: "
+    awk "BEGIN {print $delegated}" 
     printf "%s" "Pending Rewards: "
     awk "BEGIN {print $rewards}" 
     }
@@ -77,6 +86,21 @@ print_stats_prom() {
     echo "# HELP val_tx_pool_queued Current number queued in the TX Pool"
     echo "# TYPE val_tx_pool_queued gauge"
     echo "val_tx_pool_queued $txPoolQueued"
+
+    echo "# HELP val_stake_lemx Current amount of LEMX Staked"
+    echo "# TYPE val_stake_lemx gauge"
+    printf "%s" "val_stake_lemx "
+    awk "BEGIN {print $stake}"
+
+    echo "# HELP val_lockedStake_lemx Current amount of LEMX Locked and Staked"
+    echo "# TYPE val_lockedStake_lemx gauge"
+    printf "%s" "val_lockedStake_lemx "
+    awk "BEGIN {print $lockedStake}"
+
+    echo "# HELP val_delegated_lemx Current amount of LEMX delegated"
+    echo "# TYPE val_delegated_lemx gauge"
+    printf "%s" "val_delegated_lemx "
+    awk "BEGIN {print $delegated}"
 
     echo "# HELP val_pending_rewards Current amount of Pending Rewards in LEMX"
     echo "# TYPE val_pending_rewards gauge"
