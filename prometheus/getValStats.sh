@@ -1,6 +1,7 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-
+# Version 1.02
+ 
 # Options
 # -p, Print out statistics using prometheus formatting
 
@@ -29,6 +30,7 @@ walletStatus=$($operaCMD "personal.listWallets[0][\"status\"];")
 walletStatus=$(echo "$walletStatus" | tr -d "'\"")
 txPoolPending=$($operaCMD 'txpool.status.pending;')
 txPoolQueued=$($operaCMD 'txpool.status.queued;')
+totalStake=$($operaCMD "sfcc.totalStake();")/$particle
 
 # Print out Validator Metrics for people 
 print_stats() {
@@ -46,7 +48,9 @@ print_stats() {
     printf "%s" "Delegated LEMX: "
     awk "BEGIN {print $delegated}" 
     printf "%s" "Pending Rewards: "
-    awk "BEGIN {print $rewards}" 
+    awk "BEGIN {print $rewards}"
+    printf "%s" "Total Stake: "
+    awk "BEGIN {print $totalStake}"
     }
     
 # Print out Validator Metrics for Prometheus
@@ -106,6 +110,11 @@ print_stats_prom() {
     echo "# TYPE val_pending_rewards gauge"
     printf "%s" "val_pending_rewards "
     awk "BEGIN {print $rewards}"
+
+    echo "# HELP val_total_stake Total LEMX staked on the chain"
+    echo "# TYPE val_total_stake gauge"
+    printf "%s" "val_total_stake "
+    awk "BEGIN {print $totalStake}"
     } 
 
 # if -p was used, display metrics using prometheus formatting 
