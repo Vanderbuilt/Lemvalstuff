@@ -5,7 +5,8 @@ Scripts, configs, and code for Lem Validators
 
 ## Grafana
 
+[YAML export of LemonChain Grafana Dashboard](https://github.com/Vanderbuilt/Lemvalstuff/tree/main/grafana)
 
 ## Monitoring
 
-Monit setup - [https://github.com/Vanderbuilt/Lemvalstuff/monit_files/README.md](https://github.com/Vanderbuilt/Lemvalstuff/tree/main/monit_files)
+[Monit Setup](https://github.com/Vanderbuilt/Lemvalstuff/tree/main/monit_files)
