@@ -3,7 +3,7 @@
 Install Node Exporter first - I followed these instructions: https://linuxhint.com/install-prometheus-on-ubuntu/ 
 
 Copy the **getValStats.sh** and **formatMetrics.py** scripts to the **/home/ubuntu/scripts** directory and make sure they have executable permissions.  
-    `chmod +x /home/ubuntu/scripts/getValStats.sh`
+    `chmod +x /home/ubuntu/scripts/getValStats.sh`  
     `chmod +x /home/ubuntu/scripts/formatMetrics.py`
 
 Make sure that **/var/lib/prometheus/node-exporter** exists and has an ownership of **prometheus:prometheus**.  
