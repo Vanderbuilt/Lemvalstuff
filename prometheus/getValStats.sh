@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.04
+# Version 1.05
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -37,13 +37,13 @@ totalStake=$($operaCMD "sfcc.totalStake();")/$particle
 print_stats() {
     echo "Validator Status: $listening"
     echo "Validator Peers:  $peerCount"
+    echo "Validator Run Time:  $runTime"
+    printf "%s" "Staked LEMX: "
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-    echo "Val Run Time:  $runTime"
-    printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
     awk "BEGIN {print $lockedStake}" 
@@ -114,7 +114,7 @@ print_stats_prom() {
     awk "BEGIN {print $rewards}"
 
     echo "# HELP val_run_time Epoch Time stamp when validator started up"
-    echo "# TYPE val_run_time counter"
+    echo "# TYPE val_run_time gauge"
     printf "%s" "val_run_time "
     awk "BEGIN {print $runTime}"
 
