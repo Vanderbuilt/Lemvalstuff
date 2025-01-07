@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.03
+# Version 1.05
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -10,8 +10,8 @@
 # valID: replace # with your Validator ID                        #   
 # walletAddr: replace 0x00000 with your Validator Wallet Address #
 # -------------------------------------------------------------- #
-valID=18
-walletAddr="0x73585Ccf043dC527981e5543Dd92b0D07fA05636"
+valID=#
+walletAddr="0x00000"
 
 # Run the Opera Console Command
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
@@ -22,7 +22,7 @@ rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
 stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
 lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particle
 delegated=$($operaCMD "sfcc.getValidator($valID)[3];")/$particle
-startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
+runTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 block=$($operaCMD 'ftm.blockNumber;')
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
@@ -37,12 +37,12 @@ totalStake=$($operaCMD "sfcc.totalStake();")/$particle
 print_stats() {
     echo "Validator Status: $listening"
     echo "Validator Peers:  $peerCount"
+    echo "Validator Run Time:  $runTime"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-    echo "Val Start Time:  $startTime"
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
@@ -113,10 +113,10 @@ print_stats_prom() {
     printf "%s" "val_pending_rewards "
     awk "BEGIN {print $rewards}"
 
-    echo "# HELP val_start_time Epoch Time stamp when validator started up"
-    echo "# TYPE val_start_time counter"
-    printf "%s" "val_start_time "
-    awk "BEGIN {print $startTime}"
+    echo "# HELP val_run_time Epoch Time stamp when validator started up"
+    echo "# TYPE val_run_time gauge"
+    printf "%s" "val_run_time "
+    awk "BEGIN {print $runTime}"
 
     echo "# HELP val_total_stake Total LEMX staked on the chain"
     echo "# TYPE val_total_stake gauge"
