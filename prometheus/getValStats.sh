@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.05
+# Version 1.06
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -22,7 +22,7 @@ rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
 stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
 lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particle
 delegated=$($operaCMD "sfcc.getValidator($valID)[3];")/$particle
-runTime=$($operaCMD "sfcc.getValidator($valID)[5];")
+startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 block=$($operaCMD 'ftm.blockNumber;')
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
@@ -33,18 +33,44 @@ txPoolPending=$($operaCMD 'txpool.status.pending;')
 txPoolQueued=$($operaCMD 'txpool.status.queued;')
 totalStake=$($operaCMD "sfcc.totalStake();")/$particle
 
+# Format Validator Run Time
+currentTime=$(date +%s)
+daySeconds=86400
+valUpTime=$((currentTime - startTime))/$daySeconds
+
 # Print out Validator Metrics for people 
 print_stats() {
     echo "Validator Status: $listening"
     echo "Validator Peers:  $peerCount"
-    echo "Validator Run Time:  $runTime"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-    echo "Val Start Time:  $startTime"
-    echo "Val Run Time:  $runTime"
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/main
+    printf "%s" "Validator Uptime(days): "
+    awk "BEGIN {print $valUpTime}" 
+=======
+>>>>>>> 2982578 (fixed minor formatting issue)
+=======
+    printf "%s" "Validator Uptime(days): "
+    awk "BEGIN {print $valUpTime}" 
+>>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
+<<<<<<< HEAD
+=======
+>>>>>>> 2982578 (fixed minor formatting issue)
+=======
+    printf "%s" "Validator Uptime(days): "
+    awk "BEGIN {print $valUpTime}" 
+>>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
+=======
+>>>>>>> refs/remotes/origin/main
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
@@ -115,10 +141,10 @@ print_stats_prom() {
     printf "%s" "val_pending_rewards "
     awk "BEGIN {print $rewards}"
 
-    echo "# HELP val_run_time Epoch Time stamp when validator started up"
-    echo "# TYPE val_run_time gauge"
-    printf "%s" "val_run_time "
-    awk "BEGIN {print $runTime}"
+    echo "# HELP val_start_time Epoch Time stamp when validator started up"
+    echo "# TYPE val_start_time gauge"
+    printf "%s" "val_start_time "
+    awk "BEGIN {print $startTime}"
 
     echo "# HELP val_total_stake Total LEMX staked on the chain"
     echo "# TYPE val_total_stake gauge"
