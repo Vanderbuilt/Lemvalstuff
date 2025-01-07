@@ -1,6 +1,10 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
+<<<<<<< HEAD
 # Version 1.05
+=======
+# Version 1.04
+>>>>>>> bb022d9 (Update getValStats.sh)
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -43,6 +47,10 @@ print_stats() {
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
+<<<<<<< HEAD
+=======
+    echo "Val Run Time:  $runTime"
+>>>>>>> bb022d9 (Update getValStats.sh)
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
@@ -114,7 +122,11 @@ print_stats_prom() {
     awk "BEGIN {print $rewards}"
 
     echo "# HELP val_run_time Epoch Time stamp when validator started up"
+<<<<<<< HEAD
     echo "# TYPE val_run_time gauge"
+=======
+    echo "# TYPE val_run_time counter"
+>>>>>>> bb022d9 (Update getValStats.sh)
     printf "%s" "val_run_time "
     awk "BEGIN {print $runTime}"
 
