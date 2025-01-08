@@ -43,8 +43,6 @@ print_stats() {
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-    echo "Val Start Time:  $startTime"
-    echo "Val Run Time:  $runTime"
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
