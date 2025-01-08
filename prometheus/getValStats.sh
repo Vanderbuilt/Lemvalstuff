@@ -1,38 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-# Version 1.03
-=======
 # Version 1.05
->>>>>>> b9376bf (fixed formatting)
-=======
-# Version 1.05
->>>>>>> a7b7f6a (Update getValStats.sh)
-=======
-=======
->>>>>>> 7b849a4 (Update getValStats.sh)
-# Version 1.05
-=======
-# Version 1.04
->>>>>>> bb022d9 (Update getValStats.sh)
-<<<<<<< HEAD
->>>>>>> 6cd2ba1 (Update getValStats.sh)
-=======
-=======
-# Version 1.05
->>>>>>> ee20e34 (Update getValStats.sh)
->>>>>>> 7b849a4 (Update getValStats.sh)
-=======
-# Version 1.04
->>>>>>> bb022d9 (Update getValStats.sh)
-=======
-# Version 1.05
->>>>>>> ee20e34 (Update getValStats.sh)
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -69,92 +37,15 @@ totalStake=$($operaCMD "sfcc.totalStake();")/$particle
 print_stats() {
     echo "Validator Status: $listening"
     echo "Validator Peers:  $peerCount"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     echo "Validator Run Time:  $runTime"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b9376bf (fixed formatting)
-=======
-    echo "Validator Run Time:  $runTime"
->>>>>>> a7b7f6a (Update getValStats.sh)
-=======
-=======
-<<<<<<< HEAD
->>>>>>> 38d6ec3 (Update getValStats.sh)
-<<<<<<< HEAD
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> ee20e34 (Update getValStats.sh)
-<<<<<<< HEAD
->>>>>>> 7b849a4 (Update getValStats.sh)
-=======
-=======
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
->>>>>>> 9863033 (Update getValStats.sh)
->>>>>>> 38d6ec3 (Update getValStats.sh)
-=======
-    echo "Validator Run Time:  $runTime"
-<<<<<<< HEAD
-    printf "%s" "Staked LEMX: "
->>>>>>> ee20e34 (Update getValStats.sh)
-=======
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
->>>>>>> 9863033 (Update getValStats.sh)
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     echo "Val Start Time:  $startTime"
-=======
     echo "Val Run Time:  $runTime"
->>>>>>> b9376bf (fixed formatting)
-=======
->>>>>>> a7b7f6a (Update getValStats.sh)
-=======
-=======
->>>>>>> 7b849a4 (Update getValStats.sh)
-=======
->>>>>>> 38d6ec3 (Update getValStats.sh)
-=======
-    echo "Val Run Time:  $runTime"
->>>>>>> bb022d9 (Update getValStats.sh)
->>>>>>> 6cd2ba1 (Update getValStats.sh)
-=======
-    echo "Val Run Time:  $runTime"
->>>>>>> bb022d9 (Update getValStats.sh)
     printf "%s" "Staked LEMX: "
-=======
->>>>>>> ee20e34 (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 9863033 (Update getValStats.sh)
-=======
->>>>>>> ee20e34 (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 9863033 (Update getValStats.sh)
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
     awk "BEGIN {print $lockedStake}" 
@@ -224,38 +115,10 @@ print_stats_prom() {
     printf "%s" "val_pending_rewards "
     awk "BEGIN {print $rewards}"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    echo "# HELP val_start_time Epoch Time stamp when validator started up"
-    echo "# TYPE val_start_time counter"
-    printf "%s" "val_start_time "
-    awk "BEGIN {print $startTime}"
-=======
-=======
->>>>>>> a7b7f6a (Update getValStats.sh)
-    echo "# HELP val_run_time Epoch Time stamp when validator started up"
-<<<<<<< HEAD
-<<<<<<< HEAD
-    echo "# TYPE val_run_time gauge"
-=======
-    echo "# TYPE val_run_time counter"
->>>>>>> bb022d9 (Update getValStats.sh)
-=======
-    echo "# TYPE val_run_time gauge"
->>>>>>> ee20e34 (Update getValStats.sh)
-    printf "%s" "val_run_time "
-    awk "BEGIN {print $runTime}"
-<<<<<<< HEAD
->>>>>>> b9376bf (fixed formatting)
-=======
->>>>>>> a7b7f6a (Update getValStats.sh)
-=======
     echo "# HELP val_run_time Epoch Time stamp when validator started up"
     echo "# TYPE val_run_time gauge"
     printf "%s" "val_run_time "
     awk "BEGIN {print $runTime}"
->>>>>>> bb022d9 (Update getValStats.sh)
 
     echo "# HELP val_total_stake Total LEMX staked on the chain"
     echo "# TYPE val_total_stake gauge"
