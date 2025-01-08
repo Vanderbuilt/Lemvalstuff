@@ -47,14 +47,22 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Validator Run Time:  $runTime"
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 =======
     printf "%s" "Staked LEMX: "
 >>>>>>> ee20e34 (Update getValStats.sh)
+=======
+>>>>>>> 90f49cf (Update getValStats.sh)
+=======
+>>>>>>> 9863033 (Update getValStats.sh)
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
+<<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -63,6 +71,12 @@ print_stats() {
     printf "%s" "Staked LEMX: "
 =======
 >>>>>>> ee20e34 (Update getValStats.sh)
+=======
+    printf "%s" "Staked LEMX: "
+>>>>>>> 90f49cf (Update getValStats.sh)
+=======
+    printf "%s" "Staked LEMX: "
+>>>>>>> 9863033 (Update getValStats.sh)
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
     awk "BEGIN {print $lockedStake}" 
