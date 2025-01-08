@@ -1,14 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-<<<<<<< HEAD
-<<<<<<< HEAD
 # Version 1.05
-=======
-# Version 1.04
->>>>>>> bb022d9 (Update getValStats.sh)
-=======
-# Version 1.05
->>>>>>> ee20e34 (Update getValStats.sh)
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -46,37 +38,13 @@ print_stats() {
     echo "Validator Status: $listening"
     echo "Validator Peers:  $peerCount"
     echo "Validator Run Time:  $runTime"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> ee20e34 (Update getValStats.sh)
-=======
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
->>>>>>> 9863033 (Update getValStats.sh)
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     echo "Val Run Time:  $runTime"
->>>>>>> bb022d9 (Update getValStats.sh)
     printf "%s" "Staked LEMX: "
-=======
->>>>>>> ee20e34 (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 90f49cf (Update getValStats.sh)
-=======
-    printf "%s" "Staked LEMX: "
->>>>>>> 9863033 (Update getValStats.sh)
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
     awk "BEGIN {print $lockedStake}" 
@@ -147,15 +115,7 @@ print_stats_prom() {
     awk "BEGIN {print $rewards}"
 
     echo "# HELP val_run_time Epoch Time stamp when validator started up"
-<<<<<<< HEAD
-<<<<<<< HEAD
     echo "# TYPE val_run_time gauge"
-=======
-    echo "# TYPE val_run_time counter"
->>>>>>> bb022d9 (Update getValStats.sh)
-=======
-    echo "# TYPE val_run_time gauge"
->>>>>>> ee20e34 (Update getValStats.sh)
     printf "%s" "val_run_time "
     awk "BEGIN {print $runTime}"
 
