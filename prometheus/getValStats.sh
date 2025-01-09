@@ -51,6 +51,9 @@ print_stats() {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/main
     printf "%s" "Validator Uptime(days): "
     awk "BEGIN {print $valUpTime}" 
 =======
@@ -59,12 +62,15 @@ print_stats() {
     printf "%s" "Validator Uptime(days): "
     awk "BEGIN {print $valUpTime}" 
 >>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
+<<<<<<< HEAD
 =======
 >>>>>>> 2982578 (fixed minor formatting issue)
 =======
     printf "%s" "Validator Uptime(days): "
     awk "BEGIN {print $valUpTime}" 
 >>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
+=======
+>>>>>>> refs/remotes/origin/main
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
