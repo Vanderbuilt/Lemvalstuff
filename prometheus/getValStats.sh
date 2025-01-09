@@ -10,8 +10,8 @@
 # valID: replace # with your Validator ID                        #   
 # walletAddr: replace 0x00000 with your Validator Wallet Address #
 # -------------------------------------------------------------- #
-valID=18
-walletAddr="0x73585Ccf043dC527981e5543Dd92b0D07fA05636"
+valID=#
+walletAddr="0x00000"
 
 # Run the Opera Console Command
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
@@ -47,8 +47,24 @@ print_stats() {
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     printf "%s" "Validator Uptime(days): "
     awk "BEGIN {print $valUpTime}" 
+=======
+>>>>>>> 2982578 (fixed minor formatting issue)
+=======
+    printf "%s" "Validator Uptime(days): "
+    awk "BEGIN {print $valUpTime}" 
+>>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
+=======
+>>>>>>> 2982578 (fixed minor formatting issue)
+=======
+    printf "%s" "Validator Uptime(days): "
+    awk "BEGIN {print $valUpTime}" 
+>>>>>>> c3135d5 (Formatted Validator start time to display in days. Renamed prometheus)
     printf "%s" "Staked LEMX: "
     awk "BEGIN {print $stake}" 
     printf "%s" "Locked/Staked LEMX: "
