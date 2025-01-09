@@ -10,8 +10,8 @@
 # valID: replace # with your Validator ID                        #   
 # walletAddr: replace 0x00000 with your Validator Wallet Address #
 # -------------------------------------------------------------- #
-valID=18
-walletAddr="0x73585Ccf043dC527981e5543Dd92b0D07fA05636"
+valID=#
+walletAddr="0x00000"
 
 # Run the Opera Console Command
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
