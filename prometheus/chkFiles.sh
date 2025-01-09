@@ -10,11 +10,11 @@ start_node=/home/ubuntu/${start_node_file}
 genesis=/home/ubuntu/${genesis_file}
 enodes=/home/ubuntu/${enodes_file}
 preload=/extra/${preload_file}
-tmpdir=/home/ubuntu/tmp
-start_node_tmp=/home/ubuntu/tmp/${start_node_file}
-genesis_tmp=/home/ubuntu/tmp/${genesis_file}
-enodes_tmp=/home/ubuntu/tmp/${enodes_file}
-preload_tmp=/home/ubuntu/tmp/${preload_file}
+tmpdir=/tmp
+start_node_tmp=${tmpdir}/${start_node_file}
+genesis_tmp=${tmpdir}/${genesis_file}
+enodes_tmp=${tmpdir}/${enodes_file}
+preload_tmp=${tmpdir}/${preload_file}
 
 asset_base_url="https://assets.allthingslemon.io/validators"
 
