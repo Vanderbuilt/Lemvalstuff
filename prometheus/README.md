@@ -16,8 +16,8 @@ Edit crontab:
     `crontab -e`  
 
 Add these lines to your crontab:  
-    `*/5 * * * * /home/ubuntu/scripts/getValStats.sh -p > /var/lib/prometheus/node-exporter/valStats.prom`  
-    `*/5 * * * * /home/ubuntu/scripts/formatMetrics.py > /var/lib/prometheus/node-exporter/valMetrics.prom`  
+    `*/1 * * * * /home/ubuntu/scripts/getValStats.sh -p > /var/lib/prometheus/node-exporter/valStats.prom`  
+    `*/1 * * * * /home/ubuntu/scripts/formatMetrics.py > /var/lib/prometheus/node-exporter/valMetrics.prom`  
     
 Next we'll need to tell node-exporter to export in text files.
 Edit **/etc/systemd/system/node-exporter.service** with your favorite text editor. The contents should look like this:  
