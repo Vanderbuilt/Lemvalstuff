@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.09
+# Version 1.10
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -58,6 +58,11 @@ else
   active=0
 fi
 
+# Count the total number of active Validators during the Epoch
+activeVals=0
+for x in $valList; do
+  activeVals=$((activeVals+1))
+done
 
 # Print out Validator Metrics for people 
 print_stats() {
@@ -65,7 +70,8 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
-    echo "Validator $valID is Epoch Validator: $active"
+    echo "Validator $valID is active: $active"
+    echo "Total Active Validators: $activeVals"
     printf "%s" "Current Gas Fee(Gwei): "
     awk "BEGIN {print $gas}"
     printf "%s" "Current Max Priority Gas Fee(Gwei): "
@@ -85,6 +91,7 @@ print_stats() {
     awk "BEGIN {print $rewards}"
     printf "%s" "Total Stake: "
     awk "BEGIN {print $totalStake}"
+    echo "Active Validators: $valList"
     }
     
 # Print out Validator Metrics for Prometheus
@@ -111,7 +118,11 @@ print_stats_prom() {
 
     echo "# HELP val_active Validator is active in Current Epoch"
     echo "# TYPE val_active gauge"
-    echo "val_active{instance=\"$valID\",epoch=\"$epoch\"} $active"
+    echo "val_active $active"
+
+    echo "# HELP val_total_active Total number of active Validators in Current Epoch"
+    echo "# TYPE val_total_active gauge"
+    echo "val_total_active $activeVals"
 
     echo "# HELP val_current_gas Current Gas Fee on LemonChain"
     echo "# TYPE val_current_gas gauge"
