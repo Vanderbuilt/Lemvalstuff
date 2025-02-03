@@ -1,17 +1,22 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.07
+# Version 1.09
  
 # Options
 # -p, Print out statistics using prometheus formatting
 
-# Variables
-# -------------  Modify these 2 variables ---------------------- #
-# valID: replace # with your Validator ID                        #   
-# walletAddr: replace 0x00000 with your Validator Wallet Address #
-# -------------------------------------------------------------- #
-valID=#
-walletAddr="0x00000"
+# Get Wallet Address
+LEMON_DATA_DIR="/extra/lemon/data/"
+walletAddr="0x$(ls -l $LEMON_DATA_DIR/keystore/ | awk '/UTC--/ { split($9, arr, "--"); print arr[length(arr)] }')"
+
+# List Check function
+#List check
+function exists_in_list() {
+    LIST=$1
+    DELIMITER=$2
+    VALUE=$3
+    [[ "$LIST" =~ ($DELIMITER|^)$VALUE($DELIMITER|$) ]]
+}
 
 # Run the Opera Console Command
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
@@ -19,6 +24,7 @@ operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js -
 # Get Specific Validator Metrics
 particle=10**18
 seed=10**9
+valID=$($operaCMD "sfcc.getValidatorID(\"$walletAddr\");")
 rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
 stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
 lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particle
@@ -35,11 +41,23 @@ walletStatus=$(echo "$walletStatus" | tr -d "'\"")
 txPoolPending=$($operaCMD 'txpool.status.pending;')
 txPoolQueued=$($operaCMD 'txpool.status.queued;')
 totalStake=$($operaCMD "sfcc.totalStake();")/$particle
+valList=$($operaCMD "sfcc.getEpochValidatorIDs($epoch);")
 
 # Format Validator Run Time
 currentTime=$(date +%s)
 daySeconds=86400
 valUpTime=$((currentTime - startTime))/$daySeconds
+
+# Remove commas and brackets from Active Val list
+valList=$(echo $valList | tr -d ',[]')
+
+# Check if valID exists in Active list
+if exists_in_list "$valList" " " $valID; then
+  active=1
+else
+  active=0
+fi
+
 
 # Print out Validator Metrics for people 
 print_stats() {
@@ -47,6 +65,7 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
+    echo "Validator $valID is Epoch Validator: $active"
     printf "%s" "Current Gas Fee(Gwei): "
     awk "BEGIN {print $gas}"
     printf "%s" "Current Max Priority Gas Fee(Gwei): "
@@ -89,6 +108,10 @@ print_stats_prom() {
     echo "# HELP val_current_epoch Current Epoch on LemonChain"
     echo "# TYPE val_current_epoch counter"
     echo "val_current_epoch_count $epoch"
+
+    echo "# HELP val_active Validator is active in Current Epoch"
+    echo "# TYPE val_active guage"
+    echo "val_active{instance=\"$valID\",epoch=\"$epoch\"} $active"
 
     echo "# HELP val_current_gas Current Gas Fee on LemonChain"
     echo "# TYPE val_current_gas gauge"
