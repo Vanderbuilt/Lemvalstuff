@@ -110,7 +110,7 @@ print_stats_prom() {
     echo "val_current_epoch_count $epoch"
 
     echo "# HELP val_active Validator is active in Current Epoch"
-    echo "# TYPE val_active guage"
+    echo "# TYPE val_active gauge"
     echo "val_active{instance=\"$valID\",epoch=\"$epoch\"} $active"
 
     echo "# HELP val_current_gas Current Gas Fee on LemonChain"
