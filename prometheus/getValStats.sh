@@ -18,14 +18,15 @@ operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js -
 
 # Get Specific Validator Metrics
 particle=10**18
+seed=10**9
 rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
 stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
 lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particle
 delegated=$($operaCMD "sfcc.getValidator($valID)[3];")/$particle
 startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 block=$($operaCMD 'ftm.blockNumber;')
-gas=$($operaCMD 'ftm.gasPrice;')
-maxGasFee=$($operaCMD 'ftm.maxPriorityFeePerGas;')
+gas=$($operaCMD 'ftm.gasPrice;')/$seed
+maxGasFee=$($operaCMD 'ftm.maxPriorityFeePerGas;')/$seed
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
 peerCount=$($operaCMD 'net.peerCount;')
@@ -46,8 +47,10 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
-    echo "Current Gas Fee: $gas"
-    echo "Current Max Gas Fee: $maxGasFee"
+    printf "%s" "Current Gas Fee(Gwei): "
+    awk "BEGIN {print $gas}"
+    printf "%s" "Current Max Priority Gas Fee(Gwei): "
+    awk "BEGIN {print $maxGasFee}"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
@@ -89,11 +92,13 @@ print_stats_prom() {
 
     echo "# HELP val_current_gas Current Gas Fee on LemonChain"
     echo "# TYPE val_current_gas gauge"
-    echo "val_current_gas $gas"
+    printf "%s" "val_current_gas "
+    awk "BEGIN {print $gas}"
 
     echo "# HELP val_current_max_priority_gas Current Max Priority Gas Fee on LemonChain"
     echo "# TYPE val_current_max_priority_gas gauge"
-    echo "val_current_max_priority_gas $maxGasFee"
+    printf "%s" "val_current_max_priority_gas "
+    awk "BEGIN {print $maxGasFee}"
 
     if  [ "$walletStatus" = "Locked" ]
       then walletStatus=1
