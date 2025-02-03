@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.06
+# Version 1.07
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -24,6 +24,8 @@ lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")/$particl
 delegated=$($operaCMD "sfcc.getValidator($valID)[3];")/$particle
 startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 block=$($operaCMD 'ftm.blockNumber;')
+gas=$($operaCMD 'ftm.gasPrice;')
+maxGasFee=$($operaCMD 'ftm.maxPriorityFeePerGas;')
 epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
 peerCount=$($operaCMD 'net.peerCount;')
@@ -44,6 +46,8 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
+    echo "Current Gas Fee: $gas"
+    echo "Current Max Gas Fee: $maxGasFee"
     echo "Wallet Status: $walletStatus"
     echo "TX Pool Pending: $txPoolPending"
     echo "TX Pool Queued:  $txPoolQueued"
@@ -82,6 +86,14 @@ print_stats_prom() {
     echo "# HELP val_current_epoch Current Epoch on LemonChain"
     echo "# TYPE val_current_epoch counter"
     echo "val_current_epoch_count $epoch"
+
+    echo "# HELP val_current_gas Current Gas Fee on LemonChain"
+    echo "# TYPE val_current_gas gauge"
+    echo "val_current_gas $gas"
+
+    echo "# HELP val_current_max_priority_gas Current Max Priority Gas Fee on LemonChain"
+    echo "# TYPE val_current_max_priority_gas gauge"
+    echo "val_current_max_priority_gas $maxGasFee"
 
     if  [ "$walletStatus" = "Locked" ]
       then walletStatus=1
