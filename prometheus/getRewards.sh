@@ -60,8 +60,6 @@ valUpTime=$((currentTime - startTime))/$daySeconds
 # Remove commas and brackets from Active Val list
 valList=$(echo $valList | tr -d ',[]')
 
-valList=18
-
 for valID in $valList; do
   valInfo=$($operaCMD "sfcc.getValidator($valID);")
   valInfo=$(echo $valInfo | tr -d ',[]')
@@ -77,11 +75,11 @@ for valID in $valList; do
   rewards=$(convert_lemx $rewards)
 
   echo "ID: $valID"
-  echo "Addr: $valAddr"
+#  echo "Addr: $valAddr"
   echo "delegated:   $delegated"
   echo "staked:      $staked"
   echo "lockedStake: $lockedStake"
-  echo "Rewards: $rewards"
+  echo "Rewards:     $rewards"
 done
 
 
