@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.10
+# Version 1.11
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -24,6 +24,8 @@ operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js -
 # Get Specific Validator Metrics
 particle=10**18
 seed=10**9
+epoch=$($operaCMD 'sfcc.currentEpoch();')
+prevEpoch=$epoch-1
 valID=$($operaCMD "sfcc.getValidatorID(\"$walletAddr\");")
 rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")/$particle
 stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
@@ -33,7 +35,6 @@ startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 block=$($operaCMD 'ftm.blockNumber;')
 gas=$($operaCMD 'ftm.gasPrice;')/$seed
 maxGasFee=$($operaCMD 'ftm.maxPriorityFeePerGas;')/$seed
-epoch=$($operaCMD 'admin.nodeInfo.protocols.opera.epoch;')
 listening=$($operaCMD 'net.listening;')
 peerCount=$($operaCMD 'net.peerCount;')
 walletStatus=$($operaCMD "personal.listWallets[0][\"status\"];")
@@ -41,6 +42,7 @@ walletStatus=$(echo "$walletStatus" | tr -d "'\"")
 txPoolPending=$($operaCMD 'txpool.status.pending;')
 txPoolQueued=$($operaCMD 'txpool.status.queued;')
 totalStake=$($operaCMD "sfcc.totalStake();")/$particle
+rewardsPerToken=$($operaCMD "sfcc.getEpochAccumulatedRewardPerToken($prevEpoch,$valID);")/$particle
 valList=$($operaCMD "sfcc.getEpochValidatorIDs($epoch);")
 
 # Format Validator Run Time
@@ -91,6 +93,8 @@ print_stats() {
     awk "BEGIN {print $rewards}"
     printf "%s" "Total Stake: "
     awk "BEGIN {print $totalStake}"
+    printf "%s" "Previous Epoch rewards per Token: "
+    awk "BEGIN {print $rewardsPerToken}"
     echo "Active Validators: $valList"
     }
     
@@ -179,6 +183,11 @@ print_stats_prom() {
     echo "# TYPE val_total_stake gauge"
     printf "%s" "val_total_stake "
     awk "BEGIN {print $totalStake}"
+
+    echo "# HELP val_prev_rewards_per_token Previous Epoch rewards per Token"
+    echo "# TYPE val_prev_rewards_per_token gauge"
+    printf "%s" "val_prev_rewards_per_token "
+    awk "BEGIN {print $rewardsPerToken}"
     } 
 
 # if -p was used, display metrics using prometheus formatting 

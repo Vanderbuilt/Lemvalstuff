@@ -1,6 +1,9 @@
 #!/bin/bash
 # Script: getRewards.sh - A script to gether Lemon Validator Rewards
-# Version 0.1
+# Version 0.2
+
+# Options
+# -c, Print out stats in a comma separated values format
  
 # checks if number is in Scientific Notation
 is_sci_not() {
@@ -49,6 +52,7 @@ lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")
 delegated=$($operaCMD "sfcc.getValidator($valID)[3];")
 startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
 epoch=$($operaCMD 'sfcc.currentEpoch();')
+prevEpoch=$epoch-1
 totalStake=$($operaCMD "sfcc.totalStake();")
 valList=$($operaCMD "sfcc.getEpochValidatorIDs($epoch);")
 
@@ -59,6 +63,11 @@ valUpTime=$((currentTime - startTime))/$daySeconds
 
 # Remove commas and brackets from Active Val list
 valList=$(echo $valList | tr -d ',[]')
+
+#valList=18
+
+#print CSV header line if a -c option was supplied
+echo "ID,Epoch,Staked,Delegated,Locked,Rewards,PreviousEpochRewardsPerToken"
 
 for valID in $valList; do
   valInfo=$($operaCMD "sfcc.getValidator($valID);")
@@ -73,21 +82,31 @@ for valID in $valList; do
   lockedStake=$(convert_lemx $lockedStake) 
   rewards=$($operaCMD "sfcc.pendingRewards($valAddr,$valID);")
   rewards=$(convert_lemx $rewards)
+  rewardsPerToken=$($operaCMD "sfcc.getEpochAccumulatedRewardPerToken($prevEpoch,$valID);")
+  rewardsPerToken=$(convert_lemx $rewardsPerToken)
 
-  echo "ID: $valID"
-#  echo "Addr: $valAddr"
-  echo "delegated:   $delegated"
-  echo "staked:      $staked"
-  echo "lockedStake: $lockedStake"
-  echo "Rewards:     $rewards"
+# print metrics in CSV format if a -c option was supplied
+  if [[ $@ == "-c" ]]
+    then
+      echo "$valID,$epoch,$staked,$delegated,$lockedStake,$rewards,$rewardsPerToken"  
+  else
+    echo "ID: $valID"
+    #  echo "Addr: $valAddr"
+    echo "delegated:   $delegated"
+    echo "staked:      $staked"
+    echo "lockedStake: $lockedStake"
+    echo "Rewards:     $rewards"
+    echo "Previous Epoch rewards Per Token: $rewardsPerToken"
+  fi
 done
 
 
-epochSnap=$($operaCMD "sfcc.getEpochSnapshot($epoch);")
-prevEpoch=$epoch-1
-prevEpochSnap=$($operaCMD "sfcc.getEpochSnapshot($prevEpoch);")
+if [[ $@ == "" ]]
+  then
+    epochSnap=$($operaCMD "sfcc.getEpochSnapshot($epoch);")
+    prevEpochSnap=$($operaCMD "sfcc.getEpochSnapshot($prevEpoch);")
 
-
-echo "Epoch: $epoch"
-echo "Epoch Snapshot data: $epochSnap"
-echo "Previous Epoch Snapshot data: $prevEpochSnap"
+    echo ""
+    echo "Epoch $epoch Snapshot data: $epochSnap"
+    echo "Epoch $prevEpoch Snapshot data: $prevEpochSnap"
+fi
