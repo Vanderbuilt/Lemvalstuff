@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script: getValStats.sh - A script to gether Lemon Validator statistics
-# Version 1.11
+# Version 1.12
  
 # Options
 # -p, Print out statistics using prometheus formatting
@@ -37,6 +37,9 @@ gas=$($operaCMD 'ftm.gasPrice;')/$seed
 maxGasFee=$($operaCMD 'ftm.maxPriorityFeePerGas;')/$seed
 listening=$($operaCMD 'net.listening;')
 peerCount=$($operaCMD 'net.peerCount;')
+chainVersion=$($operaCMD 'sfcc.version();')
+chainVersion=$(echo "$chainVersion" | tr -d "'\"") # Remove double quotes
+chainVersion=$((chainVersion)) # convert HEX to DEC
 walletStatus=$($operaCMD "personal.listWallets[0][\"status\"];")
 walletStatus=$(echo "$walletStatus" | tr -d "'\"")
 txPoolPending=$($operaCMD 'txpool.status.pending;')
@@ -56,14 +59,25 @@ valList=$(echo $valList | tr -d ',[]')
 # Check if valID exists in Active list
 if exists_in_list "$valList" " " $valID; then
   active=1
+  valStatus="ACTIVE"
 else
   active=0
+  valStatus="INACTIVE"
 fi
 
 # Count the total number of active Validators during the Epoch
+# and gets the rank in total delegation
 activeVals=0
+valRank=0
+checkVal=1
 for x in $valList; do
   activeVals=$((activeVals+1))
+  if [[ $checkVal == "1" ]]; then
+    valRank=$activeVals 
+    if [[ $x == $valID ]]; then 
+      checkVal=0
+    fi
+  fi  
 done
 
 # Print out Validator Metrics for people 
@@ -72,8 +86,8 @@ print_stats() {
     echo "Validator Peers:  $peerCount"
     echo "Current Block: $block"
     echo "Current Epoch: $epoch"
-    echo "Validator $valID is active: $active"
-    echo "Total Active Validators: $activeVals"
+    echo "Validator $valID is $valStatus and ranked: #$valRank of $activeVals"
+    echo "LemonChain version: $chainVersion"
     printf "%s" "Current Gas Fee(Gwei): "
     awk "BEGIN {print $gas}"
     printf "%s" "Current Max Priority Gas Fee(Gwei): "
@@ -123,6 +137,14 @@ print_stats_prom() {
     echo "# HELP val_active Validator is active in Current Epoch"
     echo "# TYPE val_active gauge"
     echo "val_active $active"
+
+    echo "# HELP val_rank Validator rank in total delegation"
+    echo "# TYPE val_rank gauge"
+    echo "val_rank $valRank"
+
+    echo "# HELP val_chain_version Lemon Chain version"
+    echo "# TYPE val_chain_version gauge"
+    echo "val_chain_version $chainVersion"
 
     echo "# HELP val_total_active Total number of active Validators in Current Epoch"
     echo "# TYPE val_total_active gauge"
