@@ -1,9 +1,14 @@
 #!/bin/bash
+# Version 0.3
 # Script: getRewards.sh - A script to gether Lemon Validator Rewards
-# Version 0.2
+#  the script creates a epoch.tmp file in /tmp that contains the epoch # of the current epoch
+#  IF the script is run multiple times in the same epoch with the -c option, it will immediately exit
+#  This is done so the script can be run frequently from cron but will only output data once per epoch
 
 # Options
-# -c, Print out stats in a comma separated values format
+# None, will always dispply rewards data in a human readable format
+# -c, Print out stats in a comma separated values format once per epoch
+# -h, Print out a header in a comma separated values format
  
 # checks if number is in Scientific Notation
 is_sci_not() {
@@ -33,6 +38,12 @@ convert_lemx() {
     num=$(echo "scale=5; $num / $particle" | bc)
     echo $num
 }
+
+#print CSV header line if a -c option was supplied
+if [[ $@ == "-h" ]];then
+  echo "ID,Epoch,Staked,Delegated,Locked,Rewards,PreviousEpochRewardsPerToken"
+  exit 0
+fi
 
 # Run the Opera Console Command
 operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js --datadir=/extra/lemon/data --exec"
@@ -64,10 +75,18 @@ valUpTime=$((currentTime - startTime))/$daySeconds
 # Remove commas and brackets from Active Val list
 valList=$(echo $valList | tr -d ',[]')
 
-#valList=18
-
-#print CSV header line if a -c option was supplied
-echo "ID,Epoch,Staked,Delegated,Locked,Rewards,PreviousEpochRewardsPerToken"
+# check for tmp epoch file
+FILE=/tmp/epoch.tmp     
+if [ -f $FILE ]; then
+   epoch_chk=$(cat $FILE)
+   if [[ "$epoch" == "$epoch_chk" ]] && [[ $@ == "-c" ]]; then
+       exit 0
+   else
+      echo "$epoch" > $FILE
+   fi
+else
+   echo "$epoch" > $FILE
+fi
 
 for valID in $valList; do
   valInfo=$($operaCMD "sfcc.getValidator($valID);")
@@ -86,9 +105,8 @@ for valID in $valList; do
   rewardsPerToken=$(convert_lemx $rewardsPerToken)
 
 # print metrics in CSV format if a -c option was supplied
-  if [[ $@ == "-c" ]]
-    then
-      echo "$valID,$epoch,$staked,$delegated,$lockedStake,$rewards,$rewardsPerToken"  
+  if [[ $@ == "-c" ]];then
+    echo "$valID,$epoch,$staked,$delegated,$lockedStake,$rewards,$rewardsPerToken"  
   else
     echo "ID: $valID"
     #  echo "Addr: $valAddr"
