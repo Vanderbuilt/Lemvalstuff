@@ -23,7 +23,7 @@ Add this line to crontab if you want togather all validator reword statistics to
     `*/1 * * * * /home/ubuntu/scripts/getRewards.sh -c >> /home/ubuntu/rewards.csv 2>&1`    
 
 Next we'll need to tell node-exporter to export in text files.
-Edit **/etc/systemd/system/node-exporter.service** with your favorite text editor. The contents should look like this:  
+Edit `/etc/systemd/system/node-exporter.service` with your favorite text editor. The contents should look like this:  
 
   
     [Unit]
