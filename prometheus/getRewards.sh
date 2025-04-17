@@ -9,6 +9,7 @@
 # None, will always dispply rewards data in a human readable format
 # -c, Print out stats in a comma separated values format once per epoch
 # -h, Print out a header in a comma separated values format
+# -p, Print out stats in prometheus file importer format once per epoch
  
 # checks if number is in Scientific Notation
 is_sci_not() {
@@ -79,7 +80,7 @@ valList=$(echo $valList | tr -d ',[]')
 FILE=/tmp/epoch.tmp     
 if [ -f $FILE ]; then
    epoch_chk=$(cat $FILE)
-   if [[ "$epoch" == "$epoch_chk" ]] && [[ $@ == "-c" ]]; then
+   if [[ "$epoch" == "$epoch_chk" && ( $@ == "-c" || $@ == "-p" ) ]] ; then
        exit 0
    else
       echo "$epoch" > $FILE
@@ -88,6 +89,21 @@ else
    echo "$epoch" > $FILE
 fi
 
+# If we're printing Prometheus metrics, we need to print the header rows
+if [[ $@ == "-p" ]];then
+    echo "# HELP val_stat_staked The number of staked LEMX on the validator instance"
+    echo "# TYPE val_stat_staked gauge"
+    echo "# HELP val_stat_locked The number of locked LEMX on the validator instance"
+    echo "# TYPE val_stat_locked gauge"
+    echo "# HELP val_stat_delegated The number of delegated LEMX on the validator instance"
+    echo "# TYPE val_stat_delegated gauge"
+    echo "# HELP val_stat_rewards The number of current rewards on the validator instance"
+    echo "# TYPE val_stat_rewards gauge"
+    echo "# HELP val_stat_rewardsPerToken The current reward rate per staked token on the validator instance"
+    echo "# TYPE val_stat_rewardsPerToken gauge"
+fi
+
+# loop through all the validators
 for valID in $valList; do
   valInfo=$($operaCMD "sfcc.getValidator($valID);")
   valInfo=$(echo $valInfo | tr -d ',[]')
@@ -107,6 +123,13 @@ for valID in $valList; do
 # print metrics in CSV format if a -c option was supplied
   if [[ $@ == "-c" ]];then
     echo "$valID,$epoch,$staked,$delegated,$lockedStake,$rewards,$rewardsPerToken"  
+# print metrics in prometheus file importer format if -p option was supplied
+  elif [[ $@ == "-p" ]];then
+    echo "val_stat_staked{validator=\"$valID\"} $staked"
+    echo "val_stat_locked{validator=\"$valID\"} $lockedStake"
+    echo "val_stat_delegated{validator=\"$valID\"} $delegated"
+    echo "val_stat_rewards{validator=\"$valID\"} $rewards"
+    echo "val_stat_rewardsPerToken{validator=\"$valID\"} $rewardsPerToken"
   else
     echo "ID: $valID"
     #  echo "Addr: $valAddr"
