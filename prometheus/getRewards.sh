@@ -40,9 +40,10 @@ convert_lemx() {
     echo $num
 }
 
+
 #print CSV header line if a -c option was supplied
 if [[ $@ == "-h" ]];then
-  echo "ID,Epoch,Staked,Delegated,Locked,Rewards,PreviousEpochRewardsPerToken"
+  echo "ID,Epoch,Staked,Delegated,Locked,ActualStake,Rewards"
   exit 0
 fi
 
@@ -57,21 +58,12 @@ operaCMD="/home/ubuntu/go-opera/build/opera attach --preload /extra/preload.js -
 # Get Specific Validator Metrics
 particle=10^18
 seed=10**9
-valID=$($operaCMD "sfcc.getValidatorID(\"$walletAddr\");")
-rewards=$($operaCMD "sfcc.pendingRewards(\"$walletAddr\",$valID);")
-stake=$($operaCMD "sfcc.getStake(\"$walletAddr\",$valID);")/$particle
-lockedStake=$($operaCMD "sfcc.getLockedStake(\"$walletAddr\",$valID);")
-delegated=$($operaCMD "sfcc.getValidator($valID)[3];")
-startTime=$($operaCMD "sfcc.getValidator($valID)[5];")
+delegationPercent=0.35
+delegationPercent=$(echo "scale=4; $delegationPercent" | bc)
 epoch=$($operaCMD 'sfcc.currentEpoch();')
 prevEpoch=$epoch-1
 totalStake=$($operaCMD "sfcc.totalStake();")
 valList=$($operaCMD "sfcc.getEpochValidatorIDs($epoch);")
-
-# Format Validator Run Time
-currentTime=$(date +%s)
-daySeconds=86400
-valUpTime=$((currentTime - startTime))/$daySeconds
 
 # Remove commas and brackets from Active Val list
 valList=$(echo $valList | tr -d ',[]')
@@ -99,8 +91,8 @@ if [[ $@ == "-p" ]];then
     echo "# TYPE val_stat_delegated gauge"
     echo "# HELP val_stat_rewards The number of current rewards on the validator instance"
     echo "# TYPE val_stat_rewards gauge"
-    echo "# HELP val_stat_rewardsPerToken The current reward rate per staked token on the validator instance"
-    echo "# TYPE val_stat_rewardsPerToken gauge"
+    echo "# HELP val_stat_stakeActual The number of staked coins plus 35% of delegated coins"
+    echo "# TYPE val_stat_stakeActual gauge"
 fi
 
 # loop through all the validators
@@ -117,27 +109,35 @@ for valID in $valList; do
   lockedStake=$(convert_lemx $lockedStake) 
   rewards=$($operaCMD "sfcc.pendingRewards($valAddr,$valID);")
   rewards=$(convert_lemx $rewards)
-  rewardsPerToken=$($operaCMD "sfcc.getEpochAccumulatedRewardPerToken($prevEpoch,$valID);")
-  rewardsPerToken=$(convert_lemx $rewardsPerToken)
+  # not sure what this metrics is - removing for now
+  #rewardsPerToken=$($operaCMD "sfcc.getEpochAccumulatedRewardPerToken($prevEpoch,$valID);")
+  #rewardsPerToken=$(convert_lemx $rewardsPerToken)
 
+# calculate Actual stake - stake/lock + 35% of delegation
+  delegatedActual=$(echo "$delegated - $staked" | bc)
+  delegatedPercent=$(echo "$delegatedActual * $delegationPercent" | bc)
+  stakeActual=$(echo "$staked + $delegatedPercent" | bc)
+  
 # print metrics in CSV format if a -c option was supplied
   if [[ $@ == "-c" ]];then
-    echo "$valID,$epoch,$staked,$delegated,$lockedStake,$rewards,$rewardsPerToken"  
+    echo "$valID,$epoch,$staked,$delegated,$lockedStake,$stakeActual,$rewards"  
 # print metrics in prometheus file importer format if -p option was supplied
   elif [[ $@ == "-p" ]];then
     echo "val_stat_staked{validator=\"$valID\"} $staked"
     echo "val_stat_locked{validator=\"$valID\"} $lockedStake"
     echo "val_stat_delegated{validator=\"$valID\"} $delegated"
     echo "val_stat_rewards{validator=\"$valID\"} $rewards"
-    echo "val_stat_rewardsPerToken{validator=\"$valID\"} $rewardsPerToken"
+    echo "val_stat_stakeActual{validator=\"$valID\"} $stakeActual"
+    #echo "val_stat_rewardsPerToken{validator=\"$valID\"} $rewardsPerToken"
   else
     echo "ID: $valID"
     #  echo "Addr: $valAddr"
     echo "delegated:   $delegated"
     echo "staked:      $staked"
     echo "lockedStake: $lockedStake"
+    echo "Actual Stake: $stakeActual"
     echo "Rewards:     $rewards"
-    echo "Previous Epoch rewards Per Token: $rewardsPerToken"
+    #echo "Previous Epoch rewards Per Token: $rewardsPerToken"
   fi
 done
 
