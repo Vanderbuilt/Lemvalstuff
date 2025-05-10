@@ -20,7 +20,8 @@ Add these lines to your crontab:
     `*/1 * * * * /home/ubuntu/scripts/formatMetrics.py > /var/lib/prometheus/node-exporter/valMetrics.prom`  
 
 Add this line to crontab if you want togather all validator reword statistics to a file:  
-    `*/1 * * * * /home/ubuntu/scripts/getRewards.sh -c >> /home/ubuntu/rewards.csv 2>&1`    
+    `*/1 * * * * /home/ubuntu/scripts/getRewards.sh -p > /tmp/valRewards.prom; if [ -s /tmp/valRewards.prom ]; then mv /tmp/valRewards.prom /var/lib/prometheus/node-exporter/; fi
+`    
 
 Next we'll need to tell node-exporter to export in text files.
 Edit `/etc/systemd/system/node-exporter.service` with your favorite text editor. The contents should look like this:  
