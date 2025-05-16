@@ -11,8 +11,13 @@ tmp_dict = response_dict.copy()
 
 for key in tmp_dict:
 	# Delete metrics we don't care about
-    if key.startswith(("memstats", "les", "eth", "cmdline")):
+    if key.startswith(("memstats", "les", "eth")):
         del response_dict[key]
+    # Get the local validator ID
+    elif key.startswith(("cmdline")):
+        new_key = "val_id"
+        cmdline_value = response_dict.pop(key)
+        response_dict[new_key] = cmdline_value[9]
     # format everything that will have multiple sub-types
     elif '.' in key: 
         new_key = key.replace("/","_")
