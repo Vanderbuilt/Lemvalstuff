@@ -184,7 +184,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "increase(val_stat_rewards{validator=\"13\"}[24h])/val_stat_stakeActual{validator=\"13\"}",
+          "expr": "increase(val_stat_rewards{validator=\"1\"}[$__range]) / (val_stat_stakeActual and count_values without() (\"validator\", val_id))",
           "legendFormat": "{{validator}}",
           "range": true,
           "refId": "A",
@@ -199,7 +199,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(increase(val_stat_rewards[24h])/val_stat_stakeActual)",
+          "expr": "avg(increase(val_stat_rewards[$__range])/val_stat_stakeActual)",
           "hide": false,
           "instant": false,
           "legendFormat": "Avg",
@@ -573,7 +573,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "increase(val_stat_rewards[24h])/val_stat_stakeActual",
+          "expr": "increase(val_stat_rewards[$__range])/val_stat_stakeActual",
           "legendFormat": "{{validator}}",
           "range": true,
           "refId": "A",
@@ -601,12 +601,125 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 23,
+        "x": 0,
+        "y": 26
+      },
+      "id": 95,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": " sum(increase(val_stat_rewards[$__range]))",
+          "legendFormat": "{{validator}}",
+          "range": true,
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "${DS_EXPRESSION}"
+          },
+          "expression": "A",
+          "hide": false,
+          "reducer": "mean",
+          "refId": "B",
+          "settings": {
+            "mode": "dropNN"
+          },
+          "type": "reduce"
+        }
+      ],
+      "title": "interval average lemx distribution",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 34
       },
       "id": 68,
       "panels": [],
@@ -668,7 +781,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "id": 1,
       "options": {
@@ -741,7 +854,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 27
+        "y": 35
       },
       "id": 72,
       "options": {
@@ -844,7 +957,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 27
+        "y": 35
       },
       "id": 75,
       "options": {
@@ -932,7 +1045,7 @@
         "h": 4,
         "w": 3,
         "x": 10,
-        "y": 27
+        "y": 35
       },
       "id": 81,
       "options": {
@@ -1001,7 +1114,7 @@
         "h": 4,
         "w": 3,
         "x": 13,
-        "y": 27
+        "y": 35
       },
       "id": 54,
       "options": {
@@ -1072,7 +1185,7 @@
         "h": 4,
         "w": 3,
         "x": 16,
-        "y": 27
+        "y": 35
       },
       "id": 39,
       "interval": "30s",
@@ -1142,7 +1255,7 @@
         "h": 4,
         "w": 3,
         "x": 19,
-        "y": 27
+        "y": 35
       },
       "id": 40,
       "interval": "30s",
@@ -1211,7 +1324,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 31
+        "y": 39
       },
       "id": 76,
       "options": {
@@ -1284,7 +1397,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 31
+        "y": 39
       },
       "id": 73,
       "options": {
@@ -1353,7 +1466,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 31
+        "y": 39
       },
       "id": 46,
       "options": {
@@ -1453,7 +1566,7 @@
         "h": 4,
         "w": 3,
         "x": 10,
-        "y": 31
+        "y": 39
       },
       "id": 4,
       "options": {
@@ -1530,7 +1643,7 @@
         "h": 4,
         "w": 3,
         "x": 13,
-        "y": 31
+        "y": 39
       },
       "id": 47,
       "options": {
@@ -1598,7 +1711,7 @@
         "h": 4,
         "w": 3,
         "x": 16,
-        "y": 31
+        "y": 39
       },
       "id": 11,
       "options": {
@@ -1649,106 +1762,6 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "fieldMinMax": true,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "d"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 3,
-        "x": 19,
-        "y": 31
-      },
-      "id": 64,
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.0",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "1/(increase(val_pending_rewards[6h])*4)",
-          "legendFormat": " ",
-          "range": true,
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          }
-        }
-      ],
-      "title": "Days per LEMX",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
             "fixedColor": "light-yellow",
             "mode": "fixed"
           },
@@ -1770,7 +1783,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 35
+        "y": 43
       },
       "id": 45,
       "options": {
@@ -1796,7 +1809,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "val_stat_stakeActual{validator=\"18\"}",
+          "expr": "val_stat_stakeActual and count_values without() (\"validator\", val_id)",
           "format": "time_series",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
@@ -1842,7 +1855,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 35
+        "y": 43
       },
       "id": 71,
       "options": {
@@ -1911,7 +1924,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 35
+        "y": 43
       },
       "id": 84,
       "options": {
@@ -2014,7 +2027,7 @@
         "h": 5,
         "w": 6,
         "x": 10,
-        "y": 35
+        "y": 43
       },
       "id": 87,
       "options": {
@@ -2055,7 +2068,7 @@
           "useBackend": false
         }
       ],
-      "title": "Daily Rewards Average",
+      "title": "Rewards Average",
       "type": "timeseries"
     },
     {
@@ -2122,7 +2135,7 @@
         "h": 5,
         "w": 6,
         "x": 16,
-        "y": 35
+        "y": 43
       },
       "id": 88,
       "options": {
@@ -2163,7 +2176,7 @@
           "useBackend": false
         }
       ],
-      "title": "Daily Rewards Average",
+      "title": "Rewards Average",
       "type": "timeseries"
     },
     {
@@ -2171,6 +2184,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "No Idea what this metrics is ...",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2195,7 +2209,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 39
+        "y": 47
       },
       "id": 83,
       "options": {
@@ -2236,7 +2250,7 @@
           }
         }
       ],
-      "title": "Prev Reward per Token",
+      "title": "??Prev Reward per Token??",
       "type": "stat"
     },
     {
@@ -2266,7 +2280,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 39
+        "y": 47
       },
       "id": 77,
       "options": {
@@ -2346,7 +2360,7 @@
         "h": 4,
         "w": 3,
         "x": 6,
-        "y": 39
+        "y": 47
       },
       "id": 85,
       "options": {
@@ -2429,7 +2443,7 @@
         "h": 4,
         "w": 3,
         "x": 10,
-        "y": 40
+        "y": 48
       },
       "id": 7,
       "options": {
@@ -2516,7 +2530,7 @@
         "h": 4,
         "w": 3,
         "x": 13,
-        "y": 40
+        "y": 48
       },
       "id": 8,
       "options": {
@@ -2563,7 +2577,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 52
       },
       "id": 9,
       "panels": [],
@@ -2597,7 +2611,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 45
+        "y": 53
       },
       "id": 2,
       "options": {
@@ -2665,7 +2679,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 45
+        "y": 53
       },
       "id": 3,
       "options": {
@@ -2770,7 +2784,7 @@
         "h": 4,
         "w": 5,
         "x": 8,
-        "y": 45
+        "y": 53
       },
       "id": 49,
       "options": {
@@ -2868,7 +2882,7 @@
         "h": 4,
         "w": 7,
         "x": 13,
-        "y": 45
+        "y": 53
       },
       "id": 59,
       "options": {
@@ -2955,7 +2969,7 @@
         "h": 4,
         "w": 3,
         "x": 20,
-        "y": 45
+        "y": 53
       },
       "id": 56,
       "options": {
@@ -3052,7 +3066,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 49
+        "y": 57
       },
       "id": 51,
       "options": {
@@ -3116,7 +3130,7 @@
         "h": 4,
         "w": 4,
         "x": 4,
-        "y": 49
+        "y": 57
       },
       "id": 67,
       "options": {
@@ -3181,7 +3195,7 @@
         "h": 4,
         "w": 3,
         "x": 8,
-        "y": 49
+        "y": 57
       },
       "id": 58,
       "options": {
@@ -3244,7 +3258,7 @@
         "h": 4,
         "w": 3,
         "x": 11,
-        "y": 49
+        "y": 57
       },
       "id": 6,
       "options": {
@@ -3311,7 +3325,7 @@
         "h": 4,
         "w": 3,
         "x": 14,
-        "y": 49
+        "y": 57
       },
       "id": 61,
       "options": {
@@ -3378,7 +3392,7 @@
         "h": 4,
         "w": 3,
         "x": 17,
-        "y": 49
+        "y": 57
       },
       "id": 62,
       "options": {
@@ -3447,7 +3461,7 @@
         "h": 4,
         "w": 3,
         "x": 20,
-        "y": 49
+        "y": 57
       },
       "id": 57,
       "options": {
@@ -3548,7 +3562,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 53
+        "y": 61
       },
       "id": 50,
       "options": {
@@ -3643,7 +3657,7 @@
         "h": 4,
         "w": 7,
         "x": 4,
-        "y": 53
+        "y": 61
       },
       "id": 53,
       "options": {
@@ -3705,7 +3719,7 @@
         "h": 4,
         "w": 3,
         "x": 11,
-        "y": 53
+        "y": 61
       },
       "id": 60,
       "options": {
@@ -3772,7 +3786,7 @@
         "h": 4,
         "w": 3,
         "x": 14,
-        "y": 53
+        "y": 61
       },
       "id": 5,
       "options": {
@@ -3839,7 +3853,7 @@
         "h": 4,
         "w": 3,
         "x": 17,
-        "y": 53
+        "y": 61
       },
       "id": 63,
       "options": {
@@ -3907,7 +3921,7 @@
         "h": 4,
         "w": 3,
         "x": 20,
-        "y": 53
+        "y": 61
       },
       "id": 82,
       "options": {
@@ -4008,7 +4022,7 @@
         "h": 5,
         "w": 10,
         "x": 0,
-        "y": 57
+        "y": 65
       },
       "id": 79,
       "options": {
@@ -4105,7 +4119,7 @@
         "h": 5,
         "w": 10,
         "x": 10,
-        "y": 57
+        "y": 65
       },
       "id": 80,
       "options": {
@@ -4168,7 +4182,7 @@
         "h": 5,
         "w": 3,
         "x": 20,
-        "y": 57
+        "y": 65
       },
       "id": 86,
       "options": {
@@ -4215,7 +4229,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 62
+        "y": 70
       },
       "id": 10,
       "panels": [],
@@ -4262,7 +4276,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 63
+        "y": 71
       },
       "id": 12,
       "options": {
@@ -4409,7 +4423,7 @@
         "h": 8,
         "w": 12,
         "x": 6,
-        "y": 63
+        "y": 71
       },
       "id": 23,
       "options": {
@@ -4497,7 +4511,7 @@
         "h": 4,
         "w": 3,
         "x": 0,
-        "y": 67
+        "y": 75
       },
       "id": 14,
       "options": {
@@ -4586,7 +4600,7 @@
         "h": 4,
         "w": 3,
         "x": 3,
-        "y": 67
+        "y": 75
       },
       "id": 17,
       "options": {
@@ -4632,7 +4646,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
+        "y": 79
       },
       "id": 25,
       "panels": [],
@@ -4678,7 +4692,7 @@
         "h": 5,
         "w": 3,
         "x": 0,
-        "y": 72
+        "y": 80
       },
       "id": 15,
       "options": {
@@ -4783,7 +4797,7 @@
         "h": 5,
         "w": 3,
         "x": 3,
-        "y": 72
+        "y": 80
       },
       "id": 16,
       "options": {
@@ -5256,7 +5270,7 @@
         "h": 5,
         "w": 10,
         "x": 6,
-        "y": 72
+        "y": 80
       },
       "id": 19,
       "options": {
@@ -5347,7 +5361,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 85
       },
       "id": 42,
       "panels": [
@@ -5997,7 +6011,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 86
       },
       "id": 26,
       "panels": [
@@ -6201,7 +6215,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 87
       },
       "id": 32,
       "panels": [
@@ -7131,7 +7145,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 88
       },
       "id": 27,
       "panels": [
@@ -7580,6 +7594,6 @@
   "timezone": "browser",
   "title": "Validator Stats",
   "uid": "fe7gkoqctq6f4c",
-  "version": 337,
+  "version": 349,
   "weekStart": ""
 }
